@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Bad Apple in Braille with Audio</title>
+<style>
+  body {
+    margin: 0;
+    background: black;
+    color: white;
+    font-family: monospace;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  #output {
+    white-space: pre;
+    flex: 1;
+    overflow: auto;
+    font-size: 8px;
+    line-height: 7px;
+  }
+  #controls {
+    padding: 10px;
+    text-align: center;
+  }
+  button {
+    font-size: 18px;
+    padding: 8px 16px;
+  }
+</style>
+</head>
+<body>
+
+<div id="output"></div>
+<div id="controls">
+  <button id="playBtn">GO</button>
+</div>
+
+<!-- Braille frames -->
+<script src="frames.js"></script>
+
+<script>
+let currentFrame = 0;
+let playing = false;
+const fps = 30;
+const interval = 1000 / fps;
+let timer;
+
+const output = document.getElementById("output");
+const playBtn = document.getElementById("playBtn");
+
+// Create audio element
+const audio = new Audio("bad_apple.wav"); // Place your MP3 in the same folder
+audio.preload = "auto";
+
+function playBadApple() {
+  if (playing) return;
+  playing = true;
+  playBtn.disabled = true;
+
+  // Start audio at the same time
+  audio.currentTime = 0;
+  audio.play();
+
+  timer = setInterval(() => {
+    if (currentFrame >= frames.length) {
+      clearInterval(timer);
+      playing = false;
+      playBtn.disabled = false;
+      return;
+    }
+    output.textContent = frames[currentFrame];
+    currentFrame++;
+  }, interval);
+}
+
+playBtn.addEventListener("click", playBadApple);
+</script>
+
+</body>
+</html>
